@@ -31,6 +31,65 @@ Aegis.Payroll is the Aegis payroll, leave, attendance and employee self-service 
 9. Government holiday data is a baseline. Authorized operators can add, override, deactivate or supersede calendar entries without losing provenance.
 10. Legacy imports must reconcile before commit and must be safe to repeat without duplicates.
 
+## Desktop UX acceptance target
+
+The approved desktop mockup is the target interaction model for `Aegis.Payroll.Desktop`, not merely a visual reference. The implemented Avalonia client should converge on the same structure and operator capabilities.
+
+### Navigation
+
+The desktop client should provide persistent, role-aware navigation for:
+
+- Dashboard
+- Employees
+- Payroll Processing
+- Deductions
+- Statutory (PAYE, NIS, NHT, Education Tax)
+- Reports
+- Banking & Payments
+- Export to Dynamics 365 Business Central
+- Leave Management
+- Attendance
+- Jamaica Holidays
+- Employee/Manager self-service entry points
+- Cafeteria deductions
+- SensorNetwork integration
+- FFP Manager integration
+- VPAY legacy data import
+- Configuration
+- Security & Roles
+- Audit Trail
+- System Health
+
+### Dashboard expectations
+
+The primary desktop dashboard should make the current operational state understandable without opening multiple screens. It should include, where applicable:
+
+- Active employee count
+- Current-period gross and net payroll totals
+- Pending leave approvals and overdue exceptions
+- Cafeteria deduction batch status/count
+- Statutory submission readiness/status
+- Business Central export readiness/status
+- Current payroll period with visible processing stages: setup, attendance, deductions, calculate, review, finalized
+- PAYE/NIS/NHT/Education Tax and other deduction summaries
+- Employee headcount/department overview
+- Leave status overview
+- Recent activity/audit events
+- Upcoming payroll/statutory dates
+- Truthful health/connectivity state for Configuration, database, Business Central, Cafeteria, SensorNetwork, FFP Manager and Common services
+
+### UX rules
+
+- A green/healthy indicator must reflect a real verified state; no optimistic or placeholder health.
+- Important failures and unresolved payroll exceptions must be visible from the dashboard.
+- The payroll operator must be able to drill from summary figures to the underlying employees/transactions.
+- Finalization must visibly show what has passed review and what remains unresolved.
+- Business Central export is separate from payroll finalization and has its own state/reconciliation.
+- Desktop screens must be usable on both Windows and Linux and remain practical at normal office resolutions.
+- Visual design should remain clean, restrained and enterprise-oriented; dense operational information is acceptable when grouped clearly.
+
+The desktop mockup therefore acts as an acceptance reference: if a major capability shown there is absent, misleading, or hidden behind avoidable navigation, the desktop experience is not yet complete.
+
 ## Business Central integration
 
 The initial accounting target is **Microsoft Dynamics 365 Business Central**.
