@@ -1,6 +1,6 @@
 # Workforce and Engagement Model
 
-Aegis.Payroll must not assume that every person is a standard employee. A person may participate in the organization under one or more effective-dated engagements, including employee, intern, volunteer and consultant arrangements.
+Aegis.Payroll must not assume that every person is a standard employee. A person may participate in the organization under one or more effective-dated engagements, including employee, casual, intern, volunteer and consultant arrangements.
 
 ## Core model
 
@@ -20,7 +20,7 @@ Person
       └── AccountingProfile
 ```
 
-A person's identity is distinct from their engagement. This allows someone to move from volunteer to intern to employee without losing history or creating duplicate people.
+A person's identity is distinct from their engagement. This allows someone to move from volunteer to intern to casual to employee without losing history or creating duplicate people.
 
 ## Engagement types
 
@@ -36,6 +36,31 @@ Potential capabilities:
 - Banking/payment instructions
 - Employer contributions
 - Business Central posting
+
+### Casual
+Casuals are short-term, intermittent or as-needed worker engagements and must not be treated as merely a flag on a standard employee.
+
+Required characteristics:
+- Explicit effective start/end dates or open-ended as-needed engagement where policy permits
+- Hourly, daily, shift, piece-rate or other approved compensation basis
+- Payroll inclusion driven by approved time/work evidence, engagement eligibility and rule evaluation
+- May have irregular or zero-pay periods without terminating the engagement
+- Separate statutory/tax treatment rule profile where applicable
+- Leave and benefit eligibility must be policy-driven rather than assumed from employee defaults
+- Attendance/time capture may be the primary source of payable units
+- Support minimum call-out, overtime, weekend, holiday and shift-premium rules where configured
+- May be assigned to department, location, programme, project and cost centre independently of permanent staff structures
+- Must support conversion to another engagement type without losing historical casual-service records
+- Historical audit must preserve the rate, payable units, source time evidence and rule versions used for each paid period
+
+Example:
+
+```text
+Rule: CASUAL-DAY-RATE
+When Engagement.Type = Casual
+And ApprovedWorkDays > 0
+Then GrossEarning = ApprovedWorkDays × EffectiveDayRate
+```
 
 ### Intern
 Interns may be paid or unpaid and may have different attendance, leave, stipend and statutory treatment.
@@ -73,7 +98,7 @@ Required characteristics:
 
 ## Rule-driven behavior
 
-Application code must not contain assumptions such as `if EmployeeType == Consultant` scattered throughout the system. Engagement behavior should be resolved through typed rules/policies:
+Application code must not contain assumptions such as `if Engagement.Type == Consultant` or `if Engagement.Type == Casual` scattered throughout the system. Engagement behavior should be resolved through typed rules/policies:
 
 - Payroll eligibility
 - Statutory eligibility/treatment
@@ -107,25 +132,30 @@ A person may therefore exist in the system but have:
 
 The engine must prevent accidental duplicate pay where multiple engagements overlap unless that outcome is explicitly allowed.
 
+For casuals, an active engagement alone must not imply payable earnings. Pay should ordinarily be produced from approved payable units (hours, days, shifts, pieces or other configured measures) plus the effective compensation rule.
+
 ## Historical audit
 
 Finalized payroll snapshots must capture the engagement type and effective engagement context used for that run so later changes do not rewrite history.
 
 Historical audit must support filtering/grouping by engagement type, including:
 - Employees
+- Casuals
 - Interns
 - Volunteers
 - Consultants
 
 Examples:
 - Total consultant payments by department and month
+- Casual labour cost by department, location, project or period
+- Casual hours/days versus paid value and overtime
 - Intern stipends by programme
 - Volunteer reimbursements by project
 - Employee payroll totals excluding non-employees
 
 ## Migration
 
-Legacy VPAY employee records should import through a staging/mapping layer. The importer must not automatically assume every historical record represents a standard Employee engagement. Mapping rules and operator review should identify non-standard engagements where evidence exists.
+Legacy VPAY employee records should import through a staging/mapping layer. The importer must not automatically assume every historical record represents a standard Employee engagement. Mapping rules and operator review should identify casual and other non-standard engagements where evidence exists.
 
 ## Design principle
 
