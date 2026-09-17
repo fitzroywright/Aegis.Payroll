@@ -1,0 +1,7 @@
+<Solution>
+  <Folder Name="/Aegis.Payroll/">
+    <Project Path="Aegis.Payroll.Domain/Aegis.Payroll.Domain.csproj" />
+    <Project Path="Aegis.Payroll.Infrastructure/Aegis.Payroll.Infrastructure.csproj" />
+    <Project Path="Aegis.Payroll.Api/Aegis.Payroll.Api.csproj" />
+  </Folder>
+</Solution>
