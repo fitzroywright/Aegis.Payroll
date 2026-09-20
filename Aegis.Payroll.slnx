@@ -3,5 +3,6 @@
     <Project Path="Aegis.Payroll.Domain/Aegis.Payroll.Domain.csproj" />
     <Project Path="Aegis.Payroll.Infrastructure/Aegis.Payroll.Infrastructure.csproj" />
     <Project Path="Aegis.Payroll.Api/Aegis.Payroll.Api.csproj" />
+    <Project Path="Aegis.Payroll.Tests/Aegis.Payroll.Tests.csproj" />
   </Folder>
 </Solution>

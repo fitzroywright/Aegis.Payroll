@@ -1,0 +1,56 @@
+name: Aegis Payroll CI
+
+on:
+  push:
+    branches: [ main, feature/crud-foundation ]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Payroll
+        uses: actions/checkout@v4
+        with:
+          path: Aegis.Payroll
+
+      - name: Checkout Common.Diagnostics
+        uses: actions/checkout@v4
+        with:
+          repository: fitzroywright/Common.Diagnostics
+          path: Common/Common.Diagnostics
+
+      - name: Checkout Common.Registration
+        uses: actions/checkout@v4
+        with:
+          repository: fitzroywright/Common.Registration
+          path: Common/Common.Registration
+
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restore
+        working-directory: Aegis.Payroll
+        run: dotnet restore Aegis.Payroll.slnx -p:CommonRoot="${{ github.workspace }}/Common"
+
+      - name: Build Debug
+        working-directory: Aegis.Payroll
+        run: dotnet build Aegis.Payroll.slnx --no-restore --configuration Debug -p:CommonRoot="${{ github.workspace }}/Common"
+
+      - name: Test Debug
+        working-directory: Aegis.Payroll
+        run: dotnet test Aegis.Payroll.slnx --no-build --configuration Debug -p:CommonRoot="${{ github.workspace }}/Common"
+
+      - name: Build Release
+        working-directory: Aegis.Payroll
+        run: dotnet build Aegis.Payroll.slnx --no-restore --configuration Release -p:CommonRoot="${{ github.workspace }}/Common"
+
+      - name: Test Release
+        working-directory: Aegis.Payroll
+        run: dotnet test Aegis.Payroll.slnx --no-build --configuration Release -p:CommonRoot="${{ github.workspace }}/Common"
