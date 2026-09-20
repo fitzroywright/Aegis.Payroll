@@ -1,3 +1,5 @@
+using Aegis.Payroll.Api;
+using Common.Diagnostics;
 using Aegis.Payroll.Domain.Entities;
 using Aegis.Payroll.Infrastructure;
 using Microsoft.EntityFrameworkCore;
@@ -6,6 +8,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<PayrollDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("Payroll") ?? "Data Source=aegis-payroll.db"));
 builder.Services.AddOpenApi();
+builder.Services.AddHttpClient("configuration-registration");
+builder.Services.AddHttpClient("operations-lifecycle");
+builder.Services.AddSingleton<PayrollLifecycleTelemetry>();
+builder.Services.AddHostedService<PayrollRegistrationHostedService>();
 
 var app = builder.Build();
 app.MapOpenApi();
@@ -28,14 +34,21 @@ static void MapCrud<T>(WebApplication app, string route, Func<PayrollDbContext, 
     group.MapGet("/", async (PayrollDbContext db, CancellationToken ct) => await set(db).AsNoTracking().ToListAsync(ct));
     group.MapGet("/{id:guid}", async (Guid id, PayrollDbContext db, CancellationToken ct) =>
         await set(db).AsNoTracking().SingleOrDefaultAsync(x => x.Id == id, ct) is { } item ? Results.Ok(item) : Results.NotFound());
-    group.MapPost("/", async (T item, PayrollDbContext db, CancellationToken ct) =>
+    group.MapPost("/", async (T item, PayrollDbContext db, PayrollLifecycleTelemetry lifecycle, CancellationToken ct) =>
     {
         if (validate(item) is { } error) return Results.ValidationProblem(new Dictionary<string, string[]> { ["record"] = [error] });
         set(db).Add(item);
         await db.SaveChangesAsync(ct);
+        await lifecycle.EmitAsync(
+            "PayrollCrud",
+            typeof(T).Name + ".Created",
+            LifecycleEventOutcome.Succeeded,
+            Guid.NewGuid().ToString("N"),
+            item.Id.ToString("D"),
+            cancellationToken: ct);
         return Results.Created($"/api/{route}/{item.Id}", item);
     });
-    group.MapPut("/{id:guid}", async (Guid id, T input, PayrollDbContext db, CancellationToken ct) =>
+    group.MapPut("/{id:guid}", async (Guid id, T input, PayrollDbContext db, PayrollLifecycleTelemetry lifecycle, CancellationToken ct) =>
     {
         if (id != input.Id) return Results.BadRequest(new { error = "Route id and record id must match." });
         if (validate(input) is { } error) return Results.ValidationProblem(new Dictionary<string, string[]> { ["record"] = [error] });
@@ -43,14 +56,28 @@ static void MapCrud<T>(WebApplication app, string route, Func<PayrollDbContext, 
         input.Touch();
         db.Entry(input).State = EntityState.Modified;
         await db.SaveChangesAsync(ct);
+        await lifecycle.EmitAsync(
+            "PayrollCrud",
+            typeof(T).Name + ".Updated",
+            LifecycleEventOutcome.Succeeded,
+            Guid.NewGuid().ToString("N"),
+            input.Id.ToString("D"),
+            cancellationToken: ct);
         return Results.Ok(input);
     });
-    group.MapDelete("/{id:guid}", async (Guid id, PayrollDbContext db, CancellationToken ct) =>
+    group.MapDelete("/{id:guid}", async (Guid id, PayrollDbContext db, PayrollLifecycleTelemetry lifecycle, CancellationToken ct) =>
     {
         var item = await set(db).SingleOrDefaultAsync(x => x.Id == id, ct);
         if (item is null) return Results.NotFound();
         set(db).Remove(item);
         await db.SaveChangesAsync(ct);
+        await lifecycle.EmitAsync(
+            "PayrollCrud",
+            typeof(T).Name + ".Deleted",
+            LifecycleEventOutcome.Succeeded,
+            Guid.NewGuid().ToString("N"),
+            id.ToString("D"),
+            cancellationToken: ct);
         return Results.NoContent();
     });
 }
