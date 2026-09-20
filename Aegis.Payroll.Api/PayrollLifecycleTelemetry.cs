@@ -25,6 +25,24 @@ public sealed class PayrollLifecycleTelemetry(
                 "registration-identity.json")
             : "/var/lib/aegis/payroll/registration-identity.json");
 
+    public static LifecycleEvent CreateEvent(
+        string instanceId,
+        string flow,
+        string stage,
+        LifecycleEventOutcome outcome,
+        string correlationId,
+        string? businessId = null,
+        string? code = null) =>
+        LifecycleEvent.Create(
+            ApplicationId,
+            instanceId,
+            flow,
+            stage,
+            outcome,
+            correlationId,
+            relatedBusinessId: businessId,
+            code: code);
+
     public async Task EmitAsync(
         string flow,
         string stage,
@@ -60,15 +78,14 @@ public sealed class PayrollLifecycleTelemetry(
                 });
 
             await new LifecycleTelemetry(sink).EmitAsync(
-                LifecycleEvent.Create(
-                    ApplicationId,
+                CreateEvent(
                     InstanceId,
                     flow,
                     stage,
                     outcome,
                     correlationId,
-                    relatedBusinessId: businessId,
-                    code: code),
+                    businessId,
+                    code),
                 cancellationToken);
         }
         catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
