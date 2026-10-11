@@ -1,0 +1,8 @@
+{
+  "Common.Diagnostics": "be7f408b2c7e9864ad4caa0fb1f268b3909faccd",
+  "Common.Registration": "e8759505f7905a093d17cb0481327875385cc1f5",
+  "Common.Secrets": "0e081a55d5885a148decb0c86c1baad263448948",
+  "Common.Security": "810d21c4878a07297cef4e85a1810f88c829c582",
+  "Common.Storage": "bface4498b63f6e0b9dae1228bd9234a3a94b4d7",
+  "Common.Messaging": "85eeb80b173c0a3d9cc12c95814ed52efb961013"
+}

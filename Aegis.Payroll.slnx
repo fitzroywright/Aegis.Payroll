@@ -1,0 +1,10 @@
+<Solution>
+  <Project Path="src/Aegis.Payroll.Domain/Aegis.Payroll.Domain.csproj" />
+  <Project Path="src/Aegis.Payroll.Application/Aegis.Payroll.Application.csproj" />
+  <Project Path="src/Aegis.Payroll.Infrastructure/Aegis.Payroll.Infrastructure.csproj" />
+  <Project Path="src/Aegis.Payroll.Api/Aegis.Payroll.Api.csproj" />
+  <Project Path="src/Aegis.Payroll.Web/Aegis.Payroll.Web.csproj" />
+  <Project Path="src/Aegis.Payroll.Desktop/Aegis.Payroll.Desktop.csproj" />
+  <Project Path="src/Aegis.Payroll.LegacyImport/Aegis.Payroll.LegacyImport.csproj" />
+  <Project Path="tests/Aegis.Payroll.Tests/Aegis.Payroll.Tests.csproj" />
+</Solution>
