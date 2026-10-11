@@ -1,0 +1,9 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aegis Payroll</title><link rel="stylesheet" href="/shell.css"><link rel="manifest" href="/manifest.webmanifest"><script src="/shell.js" defer></script></head>
+<body><header><h1>Aegis Payroll</h1><span>Foundation shell</span></header>
+<main><section class="notice"><h2>Payroll implementation pending</h2><p>Calculation, approval, finalization, statutory reporting and export are unavailable. Totals will appear only when backed by accepted payroll data.</p></section>
+<section><h2>Sign in</h2><form id="login"><label>Username <input name="username" autocomplete="username" required maxlength="200"></label><label>Password <input name="password" type="password" autocomplete="current-password" required maxlength="1024"></label><button>Sign in</button></form><button id="logout" hidden>Sign out</button><p id="feedback" role="status">Sign in to inspect foundation dependencies.</p></section>
+<section><h2>System status</h2><button id="refresh" disabled>Refresh status</button><ul id="dependencies"><li>Dependencies have not been verified.</li></ul></section>
+<section><h2>Planned capabilities</h2><div id="capabilities" class="grid"></div></section></main>
+<footer>Aegis Payroll · Shell preview · No payroll records loaded</footer></body></html>

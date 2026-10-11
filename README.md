@@ -2,6 +2,12 @@
 
 Aegis.Payroll is the Aegis payroll, leave, attendance and employee self-service platform.
 
+## Current implementation
+
+The .NET 10 foundation shell is present. It wires Common.Security, Common.Secrets, Common.Messaging, Common.Diagnostics, Common.Storage and Common.Registration. Payroll calculations and operational workflows remain unavailable pending reviewed implementation.
+
+See [Shell runbook](docs/SHELL-RUNBOOK.md) for project structure, local setup, build/test commands and exact limitations. Existing delivery scope below describes the target, not completed functionality.
+
 ## October 31, 2026 delivery scope
 
 - Jamaican payroll calculation engine with effective-dated statutory rules
@@ -115,3 +121,4 @@ The initial accounting target is **Microsoft Dynamics 365 Business Central**.
 - `Aegis.Payroll.Tests` - statutory, regression, migration and reconciliation tests
 
 Target: production-capable first release by **2026-10-31**.
+
